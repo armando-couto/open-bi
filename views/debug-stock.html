@@ -1,0 +1,162 @@
+<%- include header.html %>
+
+<script>
+"use strict";
+
+var url = "http://query.yahooapis.com/v1/public/yql";
+var symbols = [
+	{
+		type: 'Solution',
+		list: ['aapl','goog','msft', 'ibm', 'orcl', 'hpq', 'ncr', 'dbd', 'emc',
+			'xrx', 'ca', 'acn']
+	},
+	{
+		type: 'Software',
+		list: ['adbe','adsk','symc','vmw','rht','sap', 'intu', 'ctxs', 'ment',
+			'fis']
+	},
+	{
+		type: 'Web',
+		list: ['fb', 'amzn', 'ebay', 'pcln', 'aol', 'yhoo', 'lnkd', 'twtr',
+			'grpn', 'yndx', 'bidu', 'nflx', 'renn', 'z', 'zen', 'baba']
+	},
+	{
+		type: 'Electronics',
+		list: ['intc', 'amd', 'nvda', 'txn', 'ter', 'mu', 'amat',
+			'xlnx', 'altr', 'qcom', 'mchp', 'atml', 'cy', 'mscc', 'lscc',
+			'brcm', 'mrvl', 'stm']
+	},
+	{
+		type: 'Storage',
+		list: ['sndk', 'wdc', 'stx']
+	},
+	{
+		type: 'Game',
+		list: ['ea', 'znga', 'king']
+	},
+	{
+		type: 'Networking',
+		list: ['csco', 'jnpr']
+	},
+	{
+		type: 'Telecom',
+		list: ['irdm', 'nok', 't', 'vod', 'vz', 'alu']
+	}/*,
+	{
+		type: 'Others',
+		list: ['xom', 'cvx', 'ba', 'gm', 'f', 'dis', 'sbux', 'brk-a',
+		'ge', 'wmt', 'ko', 'pep', 'hog','cpb',
+		'jnj', 'pg', 'pfe', 'gsk', 'mrk', 'lly', 'abt', 'bmy',
+		'c', 'wfc', 'jpm', 'bac', 'pm', 'jcp',
+		'v', 'gs', 'axp', 'ms', 'fox', 'cbs', 'viab', 'twx',
+		'dal', 'ual', 'aal', 'luv',
+		'fisv']
+	} */
+	/* ,
+	{
+		type: '',
+		list: []
+	}
+	*/
+];
+
+// build symbol list
+var list = "";
+for (var i = 0; i < symbols.length; i++) {
+	for (var j = 0; j < symbols[i].list.length; j++) {
+		list += symbols[i].list[j];
+		if (i === symbols.length - 1 &&
+			j === symbols[i].list.length - 1) {
+		}
+		else {
+			list += ",";
+		}
+	}
+}
+console.log(list);
+
+var data = encodeURIComponent("select * from yahoo.finance.quotes where " +
+	" symbol in ('" + list + "') " +
+	// " and startDate='2014-06-01' and endDate='2014-06-30'" +
+	"");
+url = url + '?q=' + data + "&format=json&diagnostics=false"
+		+ "&env=http://datatables.org/alltables.env"
+		+ "&callback="
+		;
+
+$.get(url, function(response) {
+	console.log(response);
+	// console.log(response.query.results.quote);
+	var data = response.query.results.quote;
+	var columns = ["Symbol", "Type", "StockExchange", "Name",
+	 "MarketCapitalization", "EBITDA"/*, "PERatio" , "Volume"*/
+	];
+
+	var result = "";
+	var line = "";
+	for (var j = 0; j < columns.length; j++) {
+		line += columns[j] + "\t";
+	}
+	// console.log(line);
+	result += line + "\n";
+
+	for (var i = 0; i < data.length; i++) {
+		line = "";
+		for (var j = 0; j < columns.length; j++) {
+			var info = data[i][columns[j]];
+			if (info == null)
+				info = "";
+
+			if (columns[j] === "MarketCapitalization" ||
+				columns[j] === "EBITDA") {
+				if (info.indexOf('B') > 0) {
+					info = info.replace(/B/g, '');
+					info = (parseFloat(info) * 1000).toFixed(2);
+				}
+				else
+				if (info.indexOf('M') > 0) {
+					info = info.replace(/M/g, '');
+					info = (parseFloat(info) * 1).toFixed(2);
+				}
+				info = parseFloat(info / 1000).toFixed(2);
+			}
+			else
+			if (columns[j] === 'Symbol') {
+				var symbol = data[i].Symbol.toLowerCase();
+				for (var t = 0; t < symbols.length; t++) {
+					if (symbols[t].list.indexOf(symbol) >= 0) {
+						info += '\t' + symbols[t].type;
+						break;
+					}
+				}
+			}
+
+			if (info === 'NasdaqNM') {
+				info = 'NASDAQ';
+			}
+
+			if (columns[j] !== "Type") {
+				line += info + "\t";
+			}
+		}
+		// console.log(line);
+		result += line + "\n";
+	}
+
+	$('textarea').val(result);
+});
+</script>
+
+<style>
+textarea {
+	width: 100%;
+	font-family: Courier;
+}
+</style>
+
+<form class='uk-form'>
+	<textarea rows='20'>Loading...</textarea>
+</form>
+
+<%- include drawer.html %>
+<%- include footer.html %>

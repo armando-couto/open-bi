@@ -1,0 +1,79 @@
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+Open Ecosystem - Making something people love
+
+Introducing new projects to make truly open source ecosystem:
+
+Stack & Infrastructure
+- Open source board of FPGA (Xilinx, Altera, Lattice)
+- Open source board of ARM, x86
+- Open source CPU, emulator
+- Open source OS
+- Web desktop environment (Stack, IDE, Control Panel, Docker)
+- Thai spell checker / screen keyboard
+- Web-based Docker
+
+Education
+- web-based office suite (Word processor, Spreadsheet, Presentation)
+- web-based IDE
+- web-based OS
+- Streaming server
+
+Business
+- web app for business: CMS, OpenBI, OpenClinic, ERP, webmail package ...
+
+some projects are available, make it easy to install and access
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+OpenBI 0.6
+- Support SSL
+- Use Trianglify as a background
+- Support REST so it can read data from any database and big data
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+To Do
+
+Root Page
+Root - manage and grant URL / REST / Query Page
+Root - activate user
+Big Data
+Embedded Dashboard / Chart to other web
+Git pull after committing code
+Isometric Chart
+File Drag & Drop
+Support SQLite for standalone app
+Common Dashboard for Apache Log, Paypal Transaction
+MathML
+Photo
+HTML Editor
+Color Swatch
+Register New User
+Installation page
+Table
+Auto Save
+Dynamic OGP
+Improve IDE
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+Doing
+Home page
+About
+Support Chart that not available in Excel
+Add demo of Analytics, and Social: FB, Twitter
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+Done
+SSL
+Expand width/height
+Delete Document
+Settings Dialog
+Use SPA architecture
+Word cloud
+dc.js / crossfilter / d3
+Log Out
+Print what you see is what you get
+Log In
+Setup Github
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

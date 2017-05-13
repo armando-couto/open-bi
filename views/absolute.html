@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, user-scalable=no" />
+	<meta property="og:title" content="<%= title %>" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="<%= title %>" />
+	<meta property="og:image" content="<%= host %>/images/square.jpg" />
+	<meta property="og:image:type" content="image/jpg" />
+	<title><%= title %></title>
+	<link rel="icon" type="image/png" href="/favicon.png" />
+	<link rel="stylesheet" href="/css/uikit.almost-flat.min.css" />
+	<link rel="stylesheet" href="/css/style.css" />
+	<link rel="stylesheet" type="text/less" href="/css/dc.less" />
+	<link rel="stylesheet" type="text/less" href="/css/absolute.less" />
+	<script src="/js/jquery.js"></script>
+	<script src="/js/less.js"></script>
+</head>
+<body>
+
+<ul class='title'>
+	<!--
+	<li>
+		<a href="#drawer" id='navicon' data-uk-offcanvas title="Menu"
+			class="uk-icon-button uk-icon-bars"></a>
+	</li>
+	-->
+	<li>
+		<a href="/" class="uk-icon-button uk-icon-home" title="Home"></a>
+	</li>
+	<li>
+		<a href="javascript:location.reload()" title="Refresh"
+			class="uk-icon-button uk-icon-refresh"></a>
+	</li>
+	<% if (user !== 0) { %>
+	<li>
+		<a href='javascript:createChart({})' title="Add Chart"
+			class="uk-icon-button uk-icon-plus"></a>
+	</li>
+	<li>
+		<a href='javascript:documentSaveLayout()' title="Save"
+			class="uk-icon-button uk-icon-save"></a>
+	</li>
+	<li>
+		<a href="javascript:documentSettings()" title="Settings"
+			class="uk-icon-button uk-icon-gears"></a>
+	</li>
+	<li>
+		<a href="javascript:documentViewData()" title="View Data"
+			class="uk-icon-button uk-icon-database"></a>
+	</li>
+	<% } %>
+	<li>
+		<!-- <h2 style='margin:0; text-shadow: 0 1px white;'> -->
+		<%= document.name %>
+	</li>
+</ul>
+
+<div class='ruler horz'>
+	<span class='item' style='left:320px;' > 320</span>
+	<span class='item' style='left:480px;' > 480</span>
+	<span class='item' style='left:640px;' > 640</span>
+	<span class='item' style='left:768px;' > 768</span>
+	<span class='item' style='left:1024px;'>1024</span>
+	<span class='item' style='left:1280px;'>1280</span>
+	<span class='item' style='left:1600px;'>1600</span>
+	<span class='item' style='left:1920px;'>1920</span>
+</div>
+
+<div class='ruler vert'>
+	<span class='item' style='top:320px;' > 320</span>
+	<span class='item' style='top:480px;' > 480</span>
+	<span class='item' style='top:640px;' > 640</span>
+	<span class='item' style='top:768px;' > 768</span>
+	<span class='item' style='top:1024px;'>1024</span>
+	<span class='item' style='top:1280px;'>1280</span>
+	<span class='item' style='top:1600px;'>1600</span>
+	<span class='item' style='top:1920px;'>1920</span>
+</div>
+
+<script type="text/html" id="chart-template">
+<div class='chart' id='chart_id'>
+	<span class='handle'>
+		<span class='title'></span>
+		<span class='button'>
+			<i class="uk-icon-gears" onclick='javascript:chartSettings(_id)'
+			title="Settings"></i>
+		</span>
+	</span>
+</div>
+</script>
+
+<script type="text/html" id="init"><%- document.init %></script>
+
+<%- include chart-settings.html %>
+<%- include document-settings.html %>
+<%- include document-data.html %>
+
+<script src="/js/absolute.js"></script>
+
+<script>
+"use strict";
+
+var doc_s = '<%= document.id %>';
+var doc = doc_s === '' ? 0 : parseInt(doc_s);
+var charts = new Array();
+var data = new Array();
+var xf;
+var dimension;
+var group;
+var columns;
+var data_type = '<%= document.data_type %>';
+
+$.ajaxSetup({cache: false});
+
+$(document).ready(function() {
+	try {
+		less.modifyVars(<%- document.style %>);
+	}
+	catch (e) {}
+
+	$('body').on('mouseup', function() {
+		snapAll();
+		$('body').css('cursor', 'default');
+	});
+
+	$(window).resize(resize);
+
+	main();
+});
+
+var init = $('#init').text();
+
+function main() {
+	$('.chart').remove();
+	while (charts.length > 0) {
+		charts.pop();
+	}
+
+	<% /* TODO load charts from ajax not the backend code */ %>
+	<% for (var i = 0; i < charts.length; i++) { %>
+		createChart({
+			id:		<%= charts[i].id %>,
+			name:		'<%= charts[i].name %>',
+			type:		'<%= charts[i].type %>',
+			dimension:	'<%= charts[i].dimension %>',
+			group:		'<%= charts[i].reduce %>',
+			sort:		'<%= charts[i].sort %>',
+			top:		'<%= charts[i].top %>',
+			top_value:	'<%= charts[i].top_value %>',
+			x:				<%= charts[i].x %>,
+			y:		<%= charts[i].y %>,
+			width:	<%= charts[i].width %>,
+			height:	<%= charts[i].height %>,
+			maximize_width:		<%= charts[i].maximize_width %>,
+			maximize_height:	<%= charts[i].maximize_height %>
+		});
+	<% } %>
+
+
+	$('body').append(
+	"<div id='pad-right'  style='position:absolute;background:none;'></div>");
+	$('body').append(
+	"<div id='pad-bottom' style='position:absolute;background:none;'></div>");
+
+	$('#pad-right') .css('width',  _grid_size + 'px');
+	$('#pad-right') .css('height', _grid_size + 'px');
+	$('#pad-bottom').css('width',  _grid_size + 'px');
+	$('#pad-bottom').css('height', _grid_size + 'px');
+	resize();
+	start();
+}
+
+function start() {
+	if (data_type === 'file') {
+		d3.csv("/data/<%= document.id %>", createCrossFilter);
+	}
+	else
+	if (data_type === 'url') {
+		var url = $('#settings [name=url]').val();
+		url = url.replace(/\n/g, '');
+		$.getJSON(url, createCrossFilter);
+	}
+}
+
+</script>
+
+<script src="/js/uikit.js"></script>
+
+<script src="/js/d3.js"></script>
+<script src="/js/crossfilter.js"></script>
+<script src="/js/dc.js"></script>
+
+<script src="/js/wordcloud.js"></script>
+<script src="/js/dc-wordcloud.js"></script>
+<script src="/js/dc-bubble.js"></script>
+</body>
+</html>

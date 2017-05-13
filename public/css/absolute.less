@@ -1,0 +1,135 @@
+@background: #eee;
+@backgroundShadow: none; // inset 0px 0px 300px rgba(0,0,0,.5)
+@text: #222;
+
+@chartBackground: white;
+@chartOpacity: 1.0;
+@chartBorder: #ccc;
+@chartTitle: #f7f7f7;
+@chartShadow: none;
+@ruler: #44f;
+
+html {
+	font-size: 100%;
+	width: 100%;
+	height: 100%;
+	box-shadow: @backgroundShadow;
+}
+
+body {
+	background: @background;
+	min-width: 320px;
+	color: #222;
+}
+
+.uk-modal {
+	z-index: 20000;
+}
+
+ul.title {
+	color: @text;
+}
+
+// chart style
+.chart {
+	position: absolute;
+	min-width: 60px;
+	min-height: 60px;
+	color: @text;
+	background: @chartBackground;
+	border-radius: 4px;
+	overflow: hidden;
+	transition: border 0.25s ease-in;
+	border: 1px solid @chartBorder;
+	// border-bottom: 1px solid darken(@chartBorder, 10%);
+	opacity: @chartOpacity;
+	box-shadow: @chartShadow;
+	z-index: 1000;
+
+	.handle {
+		width: 100%;
+		display: block;
+		height: 28px;
+		padding: 0;
+		margin-bottom: 4px;
+		transition: background 0.25s ease-in;
+		opacity: 0.9;
+		border-radius: 4px 4px 0 0;
+	}
+
+	.title {
+		color: @text;
+		font-weight: 200;
+		float: left;
+		margin: 4px;
+	}
+
+	.button {
+		float: right;
+		opacity: 0;
+		transition: opacity 0.25s ease-in;
+		margin: 4px 4px;
+
+		i {
+			transition: all 0.25s ease-in;
+			&:hover {
+				color: lighten(@text, 20%);
+				cursor: pointer;
+			}
+		}
+	}
+
+	&:hover .button {
+		opacity: 1.0;
+	}
+
+	& > svg {
+		margin-left: 4px;
+	}
+}
+
+.chart:hover,
+.resizable {
+	border: 1px solid darken(@chartBorder, 10%);
+	// border-bottom: 1px solid darken(@chartBorder, 30%);
+	background: url(/images/resize.png) 100% 100% no-repeat;
+	// background: lighten(@chartBackground, 10%);
+	background-color: @chartBackground;
+	border-radius: 4px 4px 0 4px;
+	.handle {
+		background: @chartTitle;
+		border-radius: 2px 2px 0 0;
+	}
+}
+
+.ruler {
+	position: absolute;
+	z-index: 2000;
+	font-size: 0.8rem !important;
+	overflow: hidden;
+	display: none;
+	color: @ruler;
+
+	.item {
+		position: absolute;
+		border: none;
+	}
+}
+
+.horz {
+	top: 32px;
+	width: 100%;
+	height: 20px;
+	.item {
+		border-left: 1px solid @ruler;
+	}
+}
+
+.vert {
+	top: 0;
+	width: 32px;
+	height: 100%;
+	.item {
+		border-top: 1px solid @ruler;
+	}
+}

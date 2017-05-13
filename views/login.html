@@ -1,0 +1,70 @@
+<%- include header.html %>
+
+<div class="uk-container">
+	<div class="uk-grid uk-grid-preserve">
+
+		<div class="uk-width-small-1-1 uk-width-medium-6-10 uk-width-large-7-10">
+			<div id="welcome">
+				<h1>Welcome to OpenBI</h1>
+				The easiest way to create interactive dashboard.
+				<a href="/openbi.pdf">User's Guide</a>
+				<img src="/images/carousel.png" style="width:100%;" />
+			</div>
+		</div>
+
+		<div class="uk-width-small-1-1 uk-width-medium-4-10 uk-width-large-3-10">
+			<form class="uk-form" id='login-form' method="post">
+				<span class="center">
+					<h2>Log In</h2>
+				</span>
+
+				<input type="text" name="username"
+					autofocus placeholder="User Name" />
+				<input type="password" name="password"
+					placeholder="Password"/>
+
+				<span class="center">
+					<input type="submit" value="Log In" class="uk-button" />
+				</span>
+				<!-- TODO forgot password
+				&nbsp;
+				<a href='#'>Forgot Password ?</a>
+				-->
+
+				<div id='error' style='display:none; margin: -4px 0 6px 0;'>
+				</div>
+
+			</form>
+		</div>
+
+	</div>
+</div>
+
+<script src="/js/d3.js"></script>
+<script src="/js/trianglify.js"></script>
+<script>
+$(document).ready(function() {
+	var t = new Trianglify({
+		cellsize: 60,
+		// x_gradient: Trianglify.colorbrewer.BuGn[0],
+		noiseIntensity: 0
+	});
+	// var p = t.generate(document.body.clientWidth,document.body.clientHeight);
+	var p = t.generate(800, 600);
+	$('body').css('background-image', p.dataUrl);
+
+	var query = location.href.split('?');
+	if (query.length > 1) {
+		var pair = query[1].split('&');
+		for (var i = 0; i < pair.length; i++) {
+			var p = unescape(pair[i]).split('=');
+			if (p[0] === "error") {
+				// console.log(p[1]);
+				$('#error').html(p[1]).fadeIn();
+			}
+		}
+	}
+});
+</script>
+
+<%- include footer.html %>
